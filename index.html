@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Inventario Mudanza</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #22263a;
+    --border: #2e3347;
+    --accent: #4f8ef7;
+    --accent2: #38d9a9;
+    --warn: #f7a84f;
+    --text: #e8eaf0;
+    --text2: #8b90a7;
+    --text3: #5a5f78;
+    --red: #f75f5f;
+    --radius: 14px;
+    --radius-sm: 8px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding-bottom: 120px;
+  }
+
+  /* HEADER */
+  .header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 16px 12px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .logo-icon {
+    width: 32px; height: 32px;
+    background: var(--accent);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+  }
+
+  .logo-text {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+  }
+
+  .logo-sub {
+    font-size: 11px;
+    color: var(--text2);
+    font-weight: 400;
+  }
+
+  .counter-badge {
+    background: var(--accent);
+    color: white;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* DATOS DEL CLIENTE */
+  .client-section {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin: 12px 12px 0;
+    overflow: hidden;
+  }
+
+  .client-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .client-header-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent2);
+  }
+
+  .chevron {
+    font-size: 12px;
+    color: var(--text3);
+    transition: transform 0.2s;
+  }
+
+  .chevron.open { transform: rotate(180deg); }
+
+  .client-fields {
+    padding: 0 14px 14px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .client-fields.hidden { display: none; }
+
+  .field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .field-group.full { grid-column: 1/-1; }
+
+  .field-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .field-input {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 9px 11px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    width: 100%;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .field-input:focus { border-color: var(--accent); }
+
+  select.field-input {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235a5f78' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 28px;
+  }
+
+  /* SEARCH */
+  .search-wrap {
+    padding: 10px 12px 0;
+  }
+
+  .search-box {
+    position: relative;
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text3);
+    font-size: 14px;
+  }
+
+  .search-input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px 10px 36px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .search-input:focus { border-color: var(--accent); }
+  .search-input::placeholder { color: var(--text3); }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex;
+    gap: 8px;
+    padding: 10px 12px 0;
+  }
+
+  .stat-pill {
+    flex: 1;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 8px 10px;
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--accent);
+    display: block;
+  }
+
+  .stat-num.green { color: var(--accent2); }
+  .stat-num.orange { color: var(--warn); }
+
+  .stat-label {
+    font-size: 10px;
+    color: var(--text3);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+
+  /* ITEMS LIST */
+  .list-wrap {
+    padding: 10px 12px 0;
+  }
+
+  .item-row {
+    display: flex;
+    align-items: center;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    margin-bottom: 6px;
+    padding: 10px 12px;
+    gap: 10px;
+    transition: border-color 0.15s, background 0.15s;
+  }
+
+  .item-row.has-qty {
+    border-color: var(--accent);
+    background: #1a2140;
+  }
+
+  .item-row.hidden { display: none; }
+
+  .item-name {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    line-height: 1.3;
+  }
+
+  .item-name.active { color: var(--accent); }
+
+  .item-controls {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .qty-btn {
+    width: 34px;
+    height: 34px;
+    border: none;
+    background: transparent;
+    color: var(--text2);
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.1s, color 0.1s;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .qty-btn:active { background: var(--border); }
+
+  .qty-btn.minus:active { color: var(--red); }
+  .qty-btn.plus:active { color: var(--accent2); }
+
+  .qty-display {
+    font-family: 'DM Mono', monospace;
+    font-size: 15px;
+    font-weight: 500;
+    width: 32px;
+    text-align: center;
+    color: var(--text);
+    border: none;
+    background: transparent;
+    outline: none;
+    padding: 0;
+    cursor: default;
+  }
+
+  .qty-display.active { color: var(--accent2); font-weight: 700; }
+
+  .notes-btn {
+    width: 32px;
+    height: 34px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--text3);
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border-radius: var(--radius-sm);
+    transition: color 0.15s;
+  }
+
+  .notes-btn:active { color: var(--warn); }
+  .notes-btn.has-note { color: var(--warn); }
+
+  /* NOTES MODAL */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 200;
+    align-items: flex-end;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius) var(--radius) 0 0;
+    padding: 20px 16px 32px;
+    width: 100%;
+    animation: slideUp 0.2s ease;
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+
+  .modal-title {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--warn);
+  }
+
+  .modal-textarea {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    resize: none;
+    height: 100px;
+    outline: none;
+    margin-bottom: 12px;
+  }
+
+  .modal-textarea:focus { border-color: var(--warn); }
+
+  .modal-btns {
+    display: flex;
+    gap: 8px;
+  }
+
+  .modal-btn {
+    flex: 1;
+    padding: 12px;
+    border-radius: var(--radius-sm);
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .modal-btn.cancel { background: var(--surface2); color: var(--text2); }
+  .modal-btn.save { background: var(--warn); color: #000; }
+
+  /* SELECTED SUMMARY */
+  .selected-section {
+    margin: 10px 12px 0;
+    background: var(--surface2);
+    border: 1px solid var(--accent);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .selected-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    cursor: pointer;
+  }
+
+  .selected-header-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+  }
+
+  .selected-list {
+    padding: 0 14px 14px;
+  }
+
+  .selected-list.hidden { display: none; }
+
+  .selected-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+
+  .selected-item:last-child { border-bottom: none; }
+
+  .selected-item-name { color: var(--text2); flex: 1; }
+  .selected-item-note { color: var(--warn); font-size: 11px; margin-top: 2px; }
+
+  .selected-item-qty {
+    font-family: 'DM Mono', monospace;
+    font-weight: 700;
+    color: var(--accent2);
+    background: rgba(56, 217, 169, 0.1);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 13px;
+  }
+
+  /* BOTTOM ACTIONS */
+  .bottom-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0; right: 0;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 12px 16px 20px;
+    display: flex;
+    gap: 10px;
+    z-index: 100;
+  }
+
+  .btn-secondary {
+    flex: 1;
+    padding: 13px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text2);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .btn-primary {
+    flex: 2;
+    padding: 13px;
+    background: var(--accent);
+    border: none;
+    border-radius: var(--radius-sm);
+    color: white;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    background: var(--accent2);
+    color: #000;
+    font-weight: 700;
+    font-size: 13px;
+    padding: 10px 20px;
+    border-radius: 20px;
+    opacity: 0;
+    transition: opacity 0.3s, transform 0.3s;
+    z-index: 300;
+    white-space: nowrap;
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* NO RESULTS */
+  .no-results {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text3);
+    font-size: 14px;
+    display: none;
+  }
+
+  .section-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text3);
+    padding: 12px 4px 6px;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div class="logo">
+      <div class="logo-icon">🚚</div>
+      <div>
+        <div class="logo-text">Inventario Mudanza</div>
+        <div class="logo-sub">Lista de artículos</div>
+      </div>
+    </div>
+    <div class="counter-badge">
+      <span id="totalItems">0</span> art.
+    </div>
+  </div>
+  <div class="search-wrap" style="padding:0;">
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input class="search-input" type="text" id="searchInput" placeholder="Buscar artículo..." autocomplete="off">
+    </div>
+  </div>
+</div>
+
+<!-- DATOS CLIENTE -->
+<div class="client-section">
+  <div class="client-header" onclick="toggleClient()">
+    <div class="client-header-left">
+      <span>👤</span>
+      <span>Datos del cliente y visita</span>
+    </div>
+    <span class="chevron open" id="clientChevron">▼</span>
+  </div>
+  <div class="client-fields" id="clientFields">
+    <div class="field-group full">
+      <div class="field-label">Nombre cliente</div>
+      <input class="field-input" type="text" id="clientName" placeholder="Nombre y apellidos">
+    </div>
+    <div class="field-group">
+      <div class="field-label">Teléfono</div>
+      <input class="field-input" type="tel" id="clientPhone" placeholder="6XX XXX XXX">
+    </div>
+    <div class="field-group">
+      <div class="field-label">Fecha visita</div>
+      <input class="field-input" type="date" id="visitDate">
+    </div>
+    <div class="field-group">
+      <div class="field-label">Origen</div>
+      <input class="field-input" type="text" id="origin" placeholder="Ciudad">
+    </div>
+    <div class="field-group">
+      <div class="field-label">Destino</div>
+      <input class="field-input" type="text" id="destination" placeholder="Ciudad">
+    </div>
+    <div class="field-group">
+      <div class="field-label">Tipo de inmueble</div>
+      <select class="field-input" id="propertyType">
+        <option value="">Seleccionar...</option>
+        <option>Piso / Apartamento</option>
+        <option>Casa / Chalet</option>
+        <option>Estudio</option>
+        <option>Local / Oficina</option>
+        <option>Trastero</option>
+      </select>
+    </div>
+    <div class="field-group">
+      <div class="field-label">Plantas sin ascensor</div>
+      <input class="field-input" type="number" id="floors" placeholder="0" min="0" max="20">
+    </div>
+    <div class="field-group full">
+      <div class="field-label">Operario responsable</div>
+      <input class="field-input" type="text" id="operative" placeholder="Tu nombre">
+    </div>
+    <div class="field-group full">
+      <div class="field-label">Observaciones generales</div>
+      <input class="field-input" type="text" id="generalNotes" placeholder="Acceso difícil, montacargas, etc.">
+    </div>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat-pill">
+    <span class="stat-num" id="statLines">0</span>
+    <span class="stat-label">Líneas</span>
+  </div>
+  <div class="stat-pill">
+    <span class="stat-num green" id="statUnits">0</span>
+    <span class="stat-label">Unidades</span>
+  </div>
+  <div class="stat-pill">
+    <span class="stat-num orange" id="statM3">0,00</span>
+    <span class="stat-label">m³ est.</span>
+  </div>
+</div>
+
+<!-- RESUMEN SELECCIONADOS -->
+<div class="selected-section" id="selectedSection" style="display:none;">
+  <div class="selected-header" onclick="toggleSelected()">
+    <div class="selected-header-left">
+      <span>✅</span>
+      <span id="selectedTitle">Artículos seleccionados</span>
+    </div>
+    <span class="chevron" id="selectedChevron">▼</span>
+  </div>
+  <div class="selected-list hidden" id="selectedList"></div>
+</div>
+
+<!-- LISTA ARTÍCULOS -->
+<div class="list-wrap">
+  <div class="section-label">Todos los artículos</div>
+  <div id="itemList"></div>
+  <div class="no-results" id="noResults">Sin resultados para "<span id="searchTerm"></span>"</div>
+</div>
+
+<!-- NOTAS MODAL -->
+<div class="modal-overlay" id="notesModal">
+  <div class="modal">
+    <div class="modal-title">📝 Nota para: <span id="modalItemName"></span></div>
+    <textarea class="modal-textarea" id="modalTextarea" placeholder="Ej: muy frágil, necesita desmontaje, requiere embalaje especial..."></textarea>
+    <div class="modal-btns">
+      <button class="modal-btn cancel" onclick="closeModal()">Cancelar</button>
+      <button class="modal-btn save" onclick="saveNote()">Guardar nota</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- BOTTOM BAR -->
+<div class="bottom-bar">
+  <button class="btn-secondary" onclick="resetAll()">Limpiar</button>
+  <button class="btn-primary" onclick="generateReport()">📋 Generar informe</button>
+</div>
+
+<script>
+const ITEMS = [
+  { name: "Aparador / Mueble TV", m3: 0.45 },
+  { name: "Armario 1 puerta", m3: 0.60 },
+  { name: "Armario 2 puertas", m3: 1.00 },
+  { name: "Armario 3 puertas", m3: 1.50 },
+  { name: "Bicicleta", m3: 0.45 },
+  { name: "Bolsa de ropa", m3: 0.08 },
+  { name: "Cabecero estándar", m3: 0.10 },
+  { name: "Caja grande", m3: 0.12 },
+  { name: "Caja mediana", m3: 0.06 },
+  { name: "Caja pequeña", m3: 0.03 },
+  { name: "Cama 150 (base+colchón)", m3: 1.40 },
+  { name: "Cama 180 (base+colchón)", m3: 1.60 },
+  { name: "Cama doble (base+colchón)", m3: 1.20 },
+  { name: "Cama individual (base+colchón)", m3: 0.80 },
+  { name: "Campana extractora", m3: 0.12 },
+  { name: "Cajonera grande", m3: 0.25 },
+  { name: "Cajonera mediana", m3: 0.15 },
+  { name: "Cajonera pequeña", m3: 0.08 },
+  { name: "Cómoda", m3: 0.35 },
+  { name: "Cuadro grande", m3: 0.05 },
+  { name: "Espejo de pie", m3: 0.20 },
+  { name: "Estantería grande", m3: 0.50 },
+  { name: "Estantería pequeña", m3: 0.25 },
+  { name: "Horno / Microondas", m3: 0.10 },
+  { name: "Lámpara colgante", m3: 0.05 },
+  { name: "Lámpara de pie", m3: 0.10 },
+  { name: "Lavavajillas", m3: 0.25 },
+  { name: "Lavadora", m3: 0.25 },
+  { name: "Librería estándar", m3: 0.35 },
+  { name: "Maleta grande", m3: 0.15 },
+  { name: "Maleta mediana", m3: 0.08 },
+  { name: "Mesa auxiliar", m3: 0.25 },
+  { name: "Mesa de centro", m3: 0.32 },
+  { name: "Mesa de cocina", m3: 0.10 },
+  { name: "Mesa escritorio", m3: 0.40 },
+  { name: "Mesa grande", m3: 0.35 },
+  { name: "Mesa mediana", m3: 0.20 },
+  { name: "Mesa pequeña", m3: 0.10 },
+  { name: "Mesita de noche", m3: 0.10 },
+  { name: "Nevera grande (>180cm)", m3: 0.55 },
+  { name: "Nevera mediana", m3: 0.35 },
+  { name: "Perchero con zapatero", m3: 0.15 },
+  { name: "Perchero de pie", m3: 0.08 },
+  { name: "Perchero de pared", m3: 0.01 },
+  { name: "Perchero recibidor", m3: 0.35 },
+  { name: "Plantas (grande)", m3: 0.15 },
+  { name: "Secadora", m3: 0.25 },
+  { name: "Silla", m3: 0.08 },
+  { name: "Silla de oficina", m3: 0.15 },
+  { name: "Sillón individual", m3: 0.35 },
+  { name: "Sofá 2 plazas", m3: 0.60 },
+  { name: "Sofá 3 plazas", m3: 0.90 },
+  { name: "Televisor 40-55\"", m3: 0.18 },
+  { name: "Televisor >55\"", m3: 0.28 },
+  { name: "Zapatero", m3: 0.20 },
+].sort((a, b) => a.name.localeCompare(b.name, 'es'));
+
+const quantities = {};
+const notes = {};
+let currentNoteItem = null;
+
+function renderList(filter = '') {
+  const container = document.getElementById('itemList');
+  container.innerHTML = '';
+  const lf = filter.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  let count = 0;
+
+  ITEMS.forEach((item, idx) => {
+    const itemNorm = item.name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    const match = itemNorm.includes(lf);
+    const qty = quantities[idx] || 0;
+    const hasNote = notes[idx] && notes[idx].trim();
+
+    const row = document.createElement('div');
+    row.className = `item-row${qty > 0 ? ' has-qty' : ''}`;
+    row.id = `row-${idx}`;
+    if (!match) row.classList.add('hidden');
+    else count++;
+
+    row.innerHTML = `
+      <div class="item-name${qty > 0 ? ' active' : ''}">${item.name}</div>
+      <div class="item-controls">
+        <button class="qty-btn minus" onclick="changeQty(${idx}, -1)">−</button>
+        <span class="qty-display${qty > 0 ? ' active' : ''}" id="qty-${idx}">${qty}</span>
+        <button class="qty-btn plus" onclick="changeQty(${idx}, 1)">+</button>
+      </div>
+      <button class="notes-btn${hasNote ? ' has-note' : ''}" onclick="openModal(${idx})" title="Añadir nota">📝</button>
+    `;
+
+    container.appendChild(row);
+  });
+
+  document.getElementById('noResults').style.display = count === 0 && filter ? 'block' : 'none';
+  document.getElementById('searchTerm').textContent = filter;
+}
+
+function changeQty(idx, delta) {
+  const current = quantities[idx] || 0;
+  const next = Math.max(0, current + delta);
+  quantities[idx] = next;
+
+  const row = document.getElementById(`row-${idx}`);
+  const qtyEl = document.getElementById(`qty-${idx}`);
+  const nameEl = row.querySelector('.item-name');
+
+  qtyEl.textContent = next;
+  if (next > 0) {
+    row.classList.add('has-qty');
+    qtyEl.classList.add('active');
+    nameEl.classList.add('active');
+  } else {
+    row.classList.remove('has-qty');
+    qtyEl.classList.remove('active');
+    nameEl.classList.remove('active');
+  }
+
+  updateStats();
+  updateSelected();
+}
+
+function updateStats() {
+  let lines = 0, units = 0, m3 = 0;
+  ITEMS.forEach((item, idx) => {
+    const q = quantities[idx] || 0;
+    if (q > 0) { lines++; units += q; m3 += q * item.m3; }
+  });
+  document.getElementById('totalItems').textContent = units;
+  document.getElementById('statLines').textContent = lines;
+  document.getElementById('statUnits').textContent = units;
+  document.getElementById('statM3').textContent = m3.toFixed(2).replace('.', ',');
+}
+
+function updateSelected() {
+  const section = document.getElementById('selectedSection');
+  const list = document.getElementById('selectedList');
+  const title = document.getElementById('selectedTitle');
+
+  const selected = ITEMS.map((item, idx) => ({ item, idx, qty: quantities[idx] || 0 }))
+    .filter(x => x.qty > 0);
+
+  if (selected.length === 0) {
+    section.style.display = 'none';
+    return;
+  }
+
+  section.style.display = 'block';
+  title.textContent = `${selected.length} artículo${selected.length > 1 ? 's' : ''} seleccionado${selected.length > 1 ? 's' : ''}`;
+
+  list.innerHTML = selected.map(({ item, idx, qty }) => `
+    <div class="selected-item">
+      <div>
+        <div class="selected-item-name">${item.name}</div>
+        ${notes[idx] ? `<div class="selected-item-note">📝 ${notes[idx]}</div>` : ''}
+      </div>
+      <span class="selected-item-qty">×${qty}</span>
+    </div>
+  `).join('');
+}
+
+function toggleClient() {
+  const fields = document.getElementById('clientFields');
+  const chevron = document.getElementById('clientChevron');
+  fields.classList.toggle('hidden');
+  chevron.classList.toggle('open');
+}
+
+function toggleSelected() {
+  const list = document.getElementById('selectedList');
+  const chevron = document.getElementById('selectedChevron');
+  list.classList.toggle('hidden');
+  chevron.classList.toggle('open');
+}
+
+function openModal(idx) {
+  currentNoteItem = idx;
+  document.getElementById('modalItemName').textContent = ITEMS[idx].name;
+  document.getElementById('modalTextarea').value = notes[idx] || '';
+  document.getElementById('notesModal').classList.add('open');
+  setTimeout(() => document.getElementById('modalTextarea').focus(), 300);
+}
+
+function closeModal() {
+  document.getElementById('notesModal').classList.remove('open');
+  currentNoteItem = null;
+}
+
+function saveNote() {
+  if (currentNoteItem === null) return;
+  const val = document.getElementById('modalTextarea').value.trim();
+  notes[currentNoteItem] = val;
+  const btn = document.querySelector(`#row-${currentNoteItem} .notes-btn`);
+  if (btn) btn.classList.toggle('has-note', !!val);
+  closeModal();
+  updateSelected();
+  showToast('Nota guardada ✓');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+function resetAll() {
+  if (!confirm('¿Limpiar todo el inventario?')) return;
+  Object.keys(quantities).forEach(k => delete quantities[k]);
+  Object.keys(notes).forEach(k => delete notes[k]);
+  document.getElementById('clientName').value = '';
+  document.getElementById('clientPhone').value = '';
+  document.getElementById('visitDate').value = '';
+  document.getElementById('origin').value = '';
+  document.getElementById('destination').value = '';
+  document.getElementById('propertyType').value = '';
+  document.getElementById('floors').value = '';
+  document.getElementById('operative').value = '';
+  document.getElementById('generalNotes').value = '';
+  renderList(document.getElementById('searchInput').value);
+  updateStats();
+  updateSelected();
+  showToast('Formulario limpiado ✓');
+}
+
+function generateReport() {
+  const selected = ITEMS.map((item, idx) => ({ item, idx, qty: quantities[idx] || 0 }))
+    .filter(x => x.qty > 0);
+
+  if (selected.length === 0) {
+    showToast('⚠️ No hay artículos seleccionados');
+    return;
+  }
+
+  const clientName = document.getElementById('clientName').value || '—';
+  const clientPhone = document.getElementById('clientPhone').value || '—';
+  const visitDate = document.getElementById('visitDate').value || '—';
+  const origin = document.getElementById('origin').value || '—';
+  const destination = document.getElementById('destination').value || '—';
+  const propertyType = document.getElementById('propertyType').value || '—';
+  const floors = document.getElementById('floors').value || '0';
+  const operative = document.getElementById('operative').value || '—';
+  const generalNotes = document.getElementById('generalNotes').value || '—';
+
+  let totalUnits = 0, totalM3 = 0;
+  selected.forEach(({ item, qty }) => { totalUnits += qty; totalM3 += qty * item.m3; });
+
+  const rows = selected.map(({ item, idx, qty }) =>
+    `<tr><td>${item.name}</td><td style="text-align:center;font-weight:700;">${qty}</td><td style="text-align:center;">${(qty * item.m3).toFixed(2)}</td><td style="color:#888;font-size:12px;">${notes[idx] || ''}</td></tr>`
+  ).join('');
+
+  const html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">
+  <title>Inventario – ${clientName}</title>
+  <style>
+    body{font-family:Arial,sans-serif;padding:24px;max-width:700px;margin:auto;color:#222;}
+    h1{font-size:20px;margin-bottom:4px;}
+    .sub{color:#666;font-size:13px;margin-bottom:20px;}
+    .meta{display:grid;grid-template-columns:1fr 1fr;gap:8px 24px;background:#f5f5f5;padding:14px;border-radius:8px;margin-bottom:20px;font-size:13px;}
+    .meta-label{color:#888;font-size:11px;text-transform:uppercase;letter-spacing:.5px;}
+    table{width:100%;border-collapse:collapse;font-size:13px;}
+    th{background:#1a1d27;color:white;padding:8px 12px;text-align:left;}
+    td{padding:8px 12px;border-bottom:1px solid #eee;}
+    tr:nth-child(even){background:#f9f9f9;}
+    .total{background:#e8f4fd;font-weight:700;padding:10px 12px;}
+    .footer{margin-top:16px;font-size:11px;color:#aaa;}
+    @media print{body{padding:10px;}}
+  </style></head><body>
+  <h1>🚚 Inventario de Mudanza</h1>
+  <div class="sub">Generado el ${new Date().toLocaleDateString('es-ES')} · Operario: ${operative}</div>
+  <div class="meta">
+    <div><div class="meta-label">Cliente</div><strong>${clientName}</strong></div>
+    <div><div class="meta-label">Teléfono</div>${clientPhone}</div>
+    <div><div class="meta-label">Fecha visita</div>${visitDate}</div>
+    <div><div class="meta-label">Tipo inmueble</div>${propertyType}</div>
+    <div><div class="meta-label">Origen</div>${origin}</div>
+    <div><div class="meta-label">Destino</div>${destination}</div>
+    <div><div class="meta-label">Plantas sin ascensor</div>${floors}</div>
+    <div><div class="meta-label">Observaciones</div>${generalNotes}</div>
+  </div>
+  <table>
+    <thead><tr><th>Artículo</th><th style="text-align:center;">Cant.</th><th style="text-align:center;">m³</th><th>Notas</th></tr></thead>
+    <tbody>${rows}
+    <tr class="total"><td>TOTAL</td><td style="text-align:center;">${totalUnits} uds.</td><td style="text-align:center;">${totalM3.toFixed(2)} m³</td><td></td></tr>
+    </tbody>
+  </table>
+  <div class="footer">Mudanzas Madrid · Inventario generado desde app de campo</div>
+  </body></html>`;
+
+  const blob = new Blob([html], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `inventario_${clientName.replace(/\s+/g,'_')}_${new Date().toISOString().slice(0,10)}.html`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Informe generado ✓');
+}
+
+// SEARCH
+document.getElementById('searchInput').addEventListener('input', e => {
+  renderList(e.target.value);
+});
+
+// Close modal on overlay click
+document.getElementById('notesModal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+// Set today's date
+document.getElementById('visitDate').value = new Date().toISOString().slice(0,10);
+
+// Init
+renderList();
+updateStats();
+</script>
+</body>
+</html>
